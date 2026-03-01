@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>HOME IRON</title>
+
+<!-- PWA / Fullscreen -->
+<meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HOME IRON">
+<link rel="manifest" href="manifest.json">
+
+<!-- Icons (inline SVG as data URI so no extra files needed) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%23080808'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle' fill='%23c8ff00'%3E💪%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080808;
+  --bg2: #111;
+  --bg3: #1c1c1c;
+  --border: #272727;
+  --border2: #333;
+  --accent: #c8ff00;
+  --accent2: #ff4d2e;
+  --accent3: #00c8ff;
+  --text: #f0f0f0;
+  --muted: #555;
+  --muted2: #888;
+  --white: #fff;
+  --radius: 14px;
+  --green: #22c55e;
+  --orange: #f97316;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; overflow:hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  height: 100dvh;
+  display: flex; flex-direction: column;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  display: flex;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 500;
+  height: calc(64px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-tab {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; transition: all 0.2s;
+  border: none; background: none; color: var(--muted2);
+  font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.5px;
+}
+.nav-tab .ico { font-size: 20px; transition: transform 0.2s; }
+.nav-tab.active { color: var(--accent); }
+.nav-tab.active .ico { transform: translateY(-2px); }
+
+/* ===== PAGES ===== */
+.page { display: none; flex-direction: column; height: calc(100dvh - 64px - env(safe-area-inset-bottom)); overflow: hidden; }
+.page.active { display: flex; }
+.page-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+.page-scroll::-webkit-scrollbar { width: 0; }
+
+/* ===== HEADER ===== */
+.page-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: relative;
+}
+.page-header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px; letter-spacing: 1px; color: var(--white);
+}
+.page-header p { font-size: 13px; color: var(--muted2); margin-top: 2px; }
+
+/* ===== HOME PAGE ===== */
+.home-top {
+  background: linear-gradient(160deg, #0f1a00 0%, var(--bg) 60%);
+  padding: 28px 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.home-greeting {
+  font-size: 13px; color: var(--muted2); letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.home-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px; line-height: 1; color: var(--white); margin-bottom: 16px;
+}
+.home-title span { color: var(--accent); }
+
+.today-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+.today-label {
+  font-size: 10px; letter-spacing: 2px; color: var(--muted2); text-transform: uppercase; margin-bottom: 10px;
+}
+.today-workout-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; color: var(--white); margin-bottom: 4px;
+}
+.today-workout-meta { font-size: 13px; color: var(--muted2); margin-bottom: 16px; }
+.today-rest {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; color: var(--muted2);
+}
+.today-rest span { color: var(--accent3); }
+
+.btn-start-today {
+  width: 100%; background: var(--accent);
+  border: none; border-radius: var(--radius);
+  padding: 16px; color: #000;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.2s;
+  margin-top: 12px;
+}
+.btn-start-today:hover { background: var(--white); }
+.btn-start-today:disabled { background: var(--border2); color: var(--muted); cursor: default; }
+
+.stats-strip {
+  display: flex; padding: 0;
+  border-bottom: 1px solid var(--border);
+}
+.stat-cell {
+  flex: 1; padding: 16px 12px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-cell:last-child { border-right: none; }
+.stat-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; color: var(--accent); line-height: 1;
+}
+.stat-lbl { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+.section-title {
+  font-size: 11px; letter-spacing: 2px; color: var(--muted2);
+  text-transform: uppercase; padding: 20px 20px 10px;
+}
+
+.workout-pill {
+  margin: 0 20px 10px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 14px;
+}
+.workout-pill:hover { border-color: var(--accent); transform: translateX(3px); }
+.pill-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.pill-icon.a { background: rgba(200,255,0,0.1); }
+.pill-icon.b { background: rgba(255,77,46,0.1); }
+.pill-body { flex: 1; }
+.pill-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--white); letter-spacing: 0.5px;
+}
+.pill-meta { font-size: 12px; color: var(--muted2); margin-top: 2px; }
+.pill-arrow { color: var(--muted); font-size: 18px; transition: all 0.2s; }
+.workout-pill:hover .pill-arrow { color: var(--accent); transform: translateX(3px); }
+
+/* ===== CALENDAR PAGE ===== */
+.cal-month-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+}
+.cal-month-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); letter-spacing: 1px;
+}
+.cal-nav-btn {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text);
+  width: 36px; height: 36px;
+  cursor: pointer; font-size: 16px; transition: all 0.2s;
+}
+.cal-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.cal-grid { padding: 0 12px; }
+.cal-weekdays {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  margin-bottom: 6px;
+}
+.cal-wd {
+  text-align: center; font-size: 10px;
+  letter-spacing: 1px; color: var(--muted2);
+  padding: 6px 0; text-transform: uppercase;
+}
+.cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.cal-day {
+  aspect-ratio: 1; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 500;
+  position: relative; cursor: default;
+  transition: all 0.2s;
+}
+.cal-day.empty { background: transparent; }
+.cal-day.other-month { color: var(--muted); }
+.cal-day.today {
+  border: 1.5px solid var(--accent); color: var(--accent); font-weight: 700;
+}
+.cal-day.trained {
+  background: rgba(200,255,0,0.15); color: var(--accent);
+}
+.cal-day.trained::after {
+  content: '';
+  position: absolute; bottom: 4px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent);
+}
+.cal-day.planned { color: var(--muted2); }
+.cal-day.planned::after {
+  content: '';
+  position: absolute; bottom: 4px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--border2);
+}
+.cal-day.skipped { color: var(--muted); }
+
+.streak-card {
+  margin: 16px 20px 0;
+  background: linear-gradient(135deg, rgba(200,255,0,0.08), rgba(200,255,0,0.02));
+  border: 1px solid rgba(200,255,0,0.2);
+  border-radius: var(--radius); padding: 16px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.streak-fire { font-size: 36px; }
+.streak-info { flex: 1; }
+.streak-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px; color: var(--accent); line-height: 1;
+}
+.streak-label { font-size: 12px; color: var(--muted2); }
+
+.history-list { padding: 0 20px; }
+.history-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.history-item:last-child { border-bottom: none; }
+.history-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent); flex-shrink: 0;
+}
+.history-date { font-size: 13px; color: var(--muted2); min-width: 90px; }
+.history-name { font-size: 14px; font-weight: 500; color: var(--white); }
+.history-dur { font-size: 12px; color: var(--muted2); margin-left: auto; }
+
+/* Clear history + section header row */
+.history-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 20px 10px;
+}
+.clear-history-btn {
+  background: transparent; border: 1px solid rgba(255,77,46,0.3);
+  border-radius: 8px; color: rgba(255,77,46,0.7);
+  padding: 5px 12px; font-size: 11px; font-weight: 600; cursor: pointer;
+  letter-spacing: 0.5px; transition: all 0.2s;
+}
+.clear-history-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+/* Day detail modal */
+.day-modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  z-index: 700; display: none; align-items: flex-end;
+}
+.day-modal-backdrop.open { display: flex; }
+.day-modal {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0; width: 100%;
+  padding: 20px 20px 36px;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.day-modal-date {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); margin-bottom: 12px;
+}
+.day-modal-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); margin-bottom: 16px;
+}
+.day-modal-stats {
+  display: flex; gap: 10px; margin-bottom: 20px;
+}
+.day-modal-stat {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px; text-align: center; flex: 1;
+}
+.day-modal-stat-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--accent); line-height: 1;
+}
+.day-modal-stat-lbl { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+.day-modal-actions { display: flex; gap: 10px; }
+.day-modal-close {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text);
+  padding: 14px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.day-modal-close:hover { border-color: var(--muted2); }
+.day-modal-delete {
+  background: rgba(255,77,46,0.1); border: 1px solid rgba(255,77,46,0.3);
+  border-radius: var(--radius); color: var(--accent2);
+  padding: 14px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.day-modal-delete:hover { background: rgba(255,77,46,0.2); border-color: var(--accent2); }
+
+/* Confirm dialog */
+.confirm-dialog {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+  z-index: 800; display: none; align-items: center; justify-content: center; padding: 24px;
+}
+.confirm-dialog.open { display: flex; }
+.confirm-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 18px; padding: 24px; width: 100%; max-width: 320px; text-align: center;
+}
+.confirm-title { font-family: 'Bebas Neue'; font-size: 22px; color: var(--white); margin-bottom: 8px; }
+.confirm-sub { font-size: 13px; color: var(--muted2); margin-bottom: 24px; line-height: 1.5; }
+.confirm-btns { display: flex; gap: 10px; }
+.confirm-cancel {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text); padding: 13px;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.confirm-ok {
+  flex: 1; background: var(--accent2); border: none;
+  border-radius: var(--radius); color: var(--white);
+  padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.confirm-ok:hover { opacity: 0.85; }
+
+/* ===== SETTINGS PAGE ===== */
+.settings-section {
+  padding: 20px 20px 0;
+}
+.settings-section-title {
+  font-size: 11px; letter-spacing: 2px; color: var(--muted2);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.settings-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 20px;
+}
+.setting-row {
+  display: flex; align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-icon { font-size: 18px; width: 28px; text-align: center; flex-shrink: 0; }
+.setting-label { flex: 1; font-size: 14px; color: var(--text); }
+.setting-label small { display: block; font-size: 11px; color: var(--muted2); margin-top: 2px; }
+
+.mode-selector {
+  display: flex; gap: 6px;
+}
+.mode-btn {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--muted2);
+  padding: 6px 12px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.mode-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+.days-selector {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.day-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--bg3); border: 1.5px solid var(--border);
+  color: var(--muted2); font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; display: flex;
+  align-items: center; justify-content: center;
+}
+.day-btn.active { background: rgba(200,255,0,0.15); border-color: var(--accent); color: var(--accent); }
+
+.number-input {
+  display: flex; align-items: center; gap: 8px;
+}
+.num-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.num-btn:hover { border-color: var(--accent); color: var(--accent); }
+.num-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; color: var(--accent); min-width: 40px; text-align: center;
+}
+
+.settings-save-btn {
+  margin: 0 20px 24px;
+  width: calc(100% - 40px);
+  background: var(--accent); border: none; border-radius: var(--radius);
+  padding: 16px; color: #000;
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.2s;
+}
+.settings-save-btn:hover { background: var(--white); }
+
+/* ===== WORKOUT DETAIL ===== */
+#page-workout { display: none; flex-direction: column; height: calc(100dvh - 64px - env(safe-area-inset-bottom)); overflow: hidden; }
+#page-workout.active { display: flex; }
+
+.workout-detail-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.btn-back-circle {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.btn-back-circle:hover { border-color: var(--accent); color: var(--accent); }
+.workout-detail-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); flex: 1;
+}
+
+.ex-list-item {
+  display: flex; align-items: center; gap: 14px;
+  margin: 0 16px 8px;
+  padding: 14px 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer; transition: all 0.2s;
+}
+.ex-list-item:hover { border-color: var(--accent); }
+.ex-list-item:first-child { margin-top: 12px; }
+.ex-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--border2);
+  width: 28px; flex-shrink: 0; transition: color 0.2s;
+}
+.ex-list-item:hover .ex-num { color: var(--accent); }
+.ex-body { flex: 1; }
+.ex-name { font-size: 15px; font-weight: 600; color: var(--white); }
+.ex-tags { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; color: var(--muted2); background: var(--bg3);
+  padding: 2px 8px; border-radius: 4px;
+}
+.ex-sets-badge {
+  text-align: right; flex-shrink: 0;
+}
+.ex-sets-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--accent); line-height: 1;
+}
+.ex-sets-lbl { font-size: 10px; color: var(--muted2); text-transform: uppercase; }
+
+.start-workout-btn {
+  margin: 12px 16px 0; width: calc(100% - 32px);
+  background: var(--accent); border: none; border-radius: var(--radius);
+  padding: 18px; color: #000;
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.2s;
+}
+.start-workout-btn:hover { background: var(--white); }
+
+/* ===== EXERCISE DETAIL OVERLAY ===== */
+.ex-detail-overlay {
+  position: fixed; inset: 0; background: var(--bg);
+  z-index: 600; display: none; flex-direction: column;
+  transform: translateX(100%); transition: transform 0.3s ease;
+}
+.ex-detail-overlay.open {
+  display: flex; transform: translateX(0);
+}
+.ex-detail-hero {
+  padding: 20px; background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.ex-detail-muscle { font-size: 12px; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+.ex-detail-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--white); line-height: 1;
+}
+.ex-detail-scroll { flex: 1; overflow-y: auto; padding: 16px; }
+.ex-detail-scroll::-webkit-scrollbar { width: 0; }
+.info-block {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
+}
+.info-block-title {
+  background: var(--bg3); padding: 8px 14px;
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted2);
+  border-bottom: 1px solid var(--border);
+}
+.info-block-text { padding: 12px 14px; font-size: 14px; color: #ccc; line-height: 1.7; }
+.warn-block {
+  background: rgba(255,77,46,0.08); border: 1px solid rgba(255,77,46,0.25);
+  border-radius: var(--radius); padding: 12px 14px;
+  display: flex; gap: 10px; margin-bottom: 10px;
+}
+.warn-text { font-size: 13px; color: #ff9070; line-height: 1.5; }
+.note-block {
+  background: rgba(200,255,0,0.06); border: 1px solid rgba(200,255,0,0.15);
+  border-radius: var(--radius); padding: 12px 14px;
+  display: flex; gap: 10px; margin-bottom: 16px;
+}
+.note-text { font-size: 13px; color: #a8cc00; line-height: 1.5; }
+
+/* ===== ACTIVE WORKOUT SCREEN ===== */
+#screen-active {
+  position: fixed; inset: 0; background: var(--bg);
+  z-index: 900; display: none; flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+#screen-active.open { display: flex; }
+
+.aw-top-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.aw-progress-wrap { flex: 1; }
+.aw-progress-labels {
+  display: flex; justify-content: space-between; margin-bottom: 6px;
+}
+.aw-progress-label { font-size: 11px; color: var(--muted2); }
+.aw-progress-pct {
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--accent);
+}
+.aw-progress-bar {
+  height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+}
+.aw-progress-fill {
+  height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease;
+}
+.aw-end-btn {
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 8px; color: var(--muted2);
+  padding: 8px 12px; font-size: 12px; cursor: pointer;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.aw-end-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+/* Main exercise area */
+.aw-main {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px; overflow: hidden;
+}
+.aw-ex-label { font-size: 10px; letter-spacing: 3px; color: var(--muted2); text-transform: uppercase; margin-bottom: 6px; }
+.aw-ex-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 9vw, 48px); color: var(--white); line-height: 1;
+  text-align: center; margin-bottom: 4px;
+}
+.aw-ex-muscle { font-size: 13px; color: var(--accent); margin-bottom: 24px; text-align: center; }
+
+/* Big rhythm display */
+.rhythm-display {
+  width: 180px; height: 180px; border-radius: 50%;
+  border: 3px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; position: relative; margin-bottom: 20px;
+  transition: border-color 0.3s, background 0.3s;
+}
+.rhythm-display.phase-down { border-color: var(--accent2); background: rgba(255,77,46,0.06); }
+.rhythm-display.phase-up { border-color: var(--accent); background: rgba(200,255,0,0.06); }
+.rhythm-display.phase-hold { border-color: var(--accent3); background: rgba(0,200,255,0.06); }
+.rhythm-phase {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted2); margin-bottom: 4px; transition: color 0.3s;
+}
+.rhythm-phase.phase-down { color: var(--accent2); }
+.rhythm-phase.phase-up { color: var(--accent); }
+.rhythm-phase.phase-hold { color: var(--accent3); }
+.rhythm-count {
+  font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--white);
+  line-height: 1; transition: transform 0.1s;
+}
+.rhythm-count.pulse { transform: scale(1.1); }
+.rhythm-reps {
+  font-size: 12px; color: var(--muted2);
+}
+
+/* Timer mode (planks etc) */
+.timer-display-big {
+  font-family: 'Bebas Neue', sans-serif; font-size: 90px; color: var(--white);
+  line-height: 1; margin-bottom: 8px;
+}
+.timer-ring-wrap { position: relative; width: 180px; height: 180px; margin-bottom: 20px; }
+.timer-svg { width: 180px; height: 180px; transform: rotate(-90deg); }
+.timer-track { fill: none; stroke: var(--border); stroke-width: 6; }
+.timer-prog {
+  fill: none; stroke: var(--accent); stroke-width: 6;
+  stroke-linecap: round; transition: stroke-dashoffset 1s linear;
+}
+.timer-inner {
+  position: absolute; inset: 0; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+}
+
+/* Sets row */
+.sets-row {
+  display: flex; gap: 8px; justify-content: center; margin-bottom: 16px;
+}
+.set-pip {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--border2); transition: all 0.3s;
+}
+.set-pip.done { background: var(--accent); border-color: var(--accent); }
+.set-pip.current { border-color: var(--accent); background: rgba(200,255,0,0.3); }
+
+.aw-info-note {
+  font-size: 12px; color: var(--muted2); text-align: center;
+  padding: 0 20px; max-width: 300px;
+}
+
+/* Bottom controls */
+.aw-controls {
+  padding: 12px 16px 20px; background: var(--bg2);
+  border-top: 1px solid var(--border); flex-shrink: 0;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.aw-btn-skip {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--muted2);
+  padding: 12px 10px; font-size: 12px; cursor: pointer;
+  transition: all 0.2s; flex: 1; white-space: nowrap;
+}
+.aw-btn-skip:hover { border-color: var(--muted2); color: var(--text); }
+.aw-btn-main {
+  flex: 2; background: var(--accent); border: none;
+  border-radius: var(--radius); color: #000;
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.2s; padding: 14px;
+  width: 100%;
+}
+.aw-btn-main:hover { background: var(--white); }
+.aw-btn-main:disabled { background: var(--border2); color: var(--muted); cursor: default; }
+
+/* ===== REST SCREEN ===== */
+#screen-rest {
+  position: fixed; inset: 0; background: rgba(8,8,8,0.97);
+  z-index: 1000; display: none; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  text-align: center;
+  padding: calc(env(safe-area-inset-top) + 48px) 24px calc(env(safe-area-inset-bottom) + 32px);
+  overflow-y: auto;
+}
+#screen-rest.open { display: flex; }
+.rest-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 4px; color: var(--accent);
+  margin-bottom: 4px;
+}
+.rest-next { font-size: 14px; color: var(--muted2); margin-bottom: 20px; }
+.rest-timer-big {
+  font-family: 'Bebas Neue', sans-serif; font-size: 110px; color: var(--white); line-height: 1; margin-bottom: 16px;
+}
+.rest-bar-wrap { width: 200px; height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 24px; overflow: hidden; }
+.rest-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s linear; }
+.rest-skip-btn {
+  background: transparent; border: 1px solid var(--border2);
+  border-radius: 10px; color: var(--muted2);
+  padding: 12px 32px; font-size: 14px; cursor: pointer; transition: all 0.2s;
+}
+.rest-skip-btn:hover { border-color: var(--muted2); color: var(--text); }
+.rest-tip {
+  max-width: 320px; margin: 0 auto 28px;
+  background: rgba(200,255,0,0.07);
+  border: 1px solid rgba(200,255,0,0.18);
+  border-radius: 12px; padding: 12px 18px;
+  font-size: 13px; color: #c0d870; line-height: 1.6;
+  text-align: center; min-height: 20px;
+}
+.rest-countdown-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 160px; color: var(--white); line-height: 1;
+  animation: countPulse 1s ease-in-out;
+}
+@keyframes countPulse {
+  0%   { transform: scale(1.4); opacity: 0.4; }
+  40%  { transform: scale(1.0); opacity: 1; }
+  100% { transform: scale(1.0); opacity: 1; }
+}
+
+/* ===== COMPLETION ===== */
+#screen-done {
+  position: fixed; inset: 0; background: var(--bg);
+  z-index: 1100; display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+#screen-done.open { display: flex; }
+.done-emoji { font-size: 80px; margin-bottom: 20px; animation: jiggle 1s ease infinite alternate; }
+@keyframes jiggle {
+  0% { transform: rotate(-5deg) scale(1); }
+  100% { transform: rotate(5deg) scale(1.1); }
+}
+.done-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 60px; color: var(--accent);
+  letter-spacing: 3px; line-height: 1; margin-bottom: 8px;
+}
+.done-sub { font-size: 14px; color: var(--muted2); margin-bottom: 32px; }
+.done-stats { display: flex; gap: 12px; margin-bottom: 36px; }
+.done-stat {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px; min-width: 80px;
+}
+.done-stat-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--accent); line-height: 1;
+}
+.done-stat-lbl { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+.done-home-btn {
+  background: var(--accent); border: none; border-radius: var(--radius);
+  padding: 18px 48px; color: #000;
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.2s;
+}
+.done-home-btn:hover { background: var(--white); }
+
+/* Misc */
+.dumbbell-icon { font-size: 32px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ===================== PAGES ===================== -->
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="page-scroll">
+    <div class="home-top">
+      <div class="home-greeting" id="home-greeting">Доброго ранку</div>
+      <div class="home-title">HOME<br><span>IRON</span></div>
+      <div class="today-card" id="today-card">
+        <div class="today-label">СЬОГОДНІ</div>
+        <div id="today-content">
+          <div class="today-rest">Завантаження...</div>
+        </div>
+        <button class="btn-start-today" id="btn-start-today" onclick="startTodayWorkout()" style="display:none">
+          ▶ ТРЕНУВАТИСЬ ЗАРАЗ
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-cell">
+        <div class="stat-val" id="s-total">0</div>
+        <div class="stat-lbl">Тренувань</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val" id="s-streak">0</div>
+        <div class="stat-lbl">Streak 🔥</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val" id="s-weight">—</div>
+        <div class="stat-lbl">Кг гантелі</div>
+      </div>
+    </div>
+
+    <div class="section-title">ПРОГРАМА</div>
+    <div class="workout-pill" onclick="openWorkoutDetail('A')">
+      <div class="pill-icon a">💪</div>
+      <div class="pill-body">
+        <div class="pill-name">Блок А — Груди</div>
+        <div class="pill-meta">Груди · Трицепс · Нижній прес · 5 вправ</div>
+      </div>
+      <div class="pill-arrow">›</div>
+    </div>
+    <div class="workout-pill" onclick="openWorkoutDetail('B')">
+      <div class="pill-icon b">🔥</div>
+      <div class="pill-body">
+        <div class="pill-name">Блок Б — Плечі</div>
+        <div class="pill-meta">Плечі · Біцепс · Кор · 5 вправ</div>
+      </div>
+      <div class="pill-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div id="page-calendar" class="page">
+  <div class="page-scroll">
+    <div class="page-header">
+      <h1>Прогрес</h1>
+      <p>Твоя активність по місяцях</p>
+    </div>
+    <div class="cal-month-nav">
+      <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+      <div class="cal-month-name" id="cal-month-name">Березень 2026</div>
+      <button class="cal-nav-btn" onclick="calNext()">›</button>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-weekdays">
+        <div class="cal-wd">ПН</div><div class="cal-wd">ВТ</div><div class="cal-wd">СР</div>
+        <div class="cal-wd">ЧТ</div><div class="cal-wd">ПТ</div><div class="cal-wd">СБ</div>
+        <div class="cal-wd">НД</div>
+      </div>
+      <div class="cal-days" id="cal-days"></div>
+    </div>
+    <div class="streak-card">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-info">
+        <div class="streak-num" id="streak-big">0</div>
+        <div class="streak-label">тижнів поспіль за планом</div>
+      </div>
+    </div>
+    <div class="history-header">
+      <div class="section-title" style="padding:0">ОСТАННІ ТРЕНУВАННЯ</div>
+      <button class="clear-history-btn" onclick="askClearHistory()">✕ Очистити</button>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+</div>
+
+<!-- DAY DETAIL MODAL -->
+<div class="day-modal-backdrop" id="day-modal-backdrop" onclick="closeDayModal(event)">
+  <div class="day-modal" id="day-modal">
+    <div class="day-modal-date" id="day-modal-date"></div>
+    <div class="day-modal-title" id="day-modal-title"></div>
+    <div class="day-modal-stats" id="day-modal-stats"></div>
+    <div class="day-modal-actions">
+      <button class="day-modal-close" onclick="closeDayModal()">Закрити</button>
+      <button class="day-modal-delete" id="day-modal-delete-btn">🗑 Видалити</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-dialog" id="confirm-dialog">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">Підтвердити</div>
+    <div class="confirm-sub" id="confirm-sub">Ти впевнений?</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="closeConfirm()">Скасувати</button>
+      <button class="confirm-ok" id="confirm-ok-btn">Видалити</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="page-settings" class="page">
+  <div class="page-scroll">
+    <div class="page-header">
+      <h1>Налаштування</h1>
+      <p>Програма та параметри</p>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Режим тренувань</div>
+      <div class="settings-card">
+        <div class="setting-row">
+          <div class="setting-icon">📅</div>
+          <div class="setting-label">Тренувань на тиждень</div>
+          <div class="mode-selector">
+            <button class="mode-btn" id="mode-2" onclick="setMode(2)">2×</button>
+            <button class="mode-btn" id="mode-3" onclick="setMode(3)">3×</button>
+            <button class="mode-btn" id="mode-4" onclick="setMode(4)">4×</button>
+          </div>
+        </div>
+        <div class="setting-row" style="flex-direction:column; align-items:flex-start; gap:10px;">
+          <div style="display:flex; align-items:center; gap:8px; width:100%">
+            <div class="setting-icon">🗓️</div>
+            <div class="setting-label">Дні тренувань</div>
+          </div>
+          <div class="days-selector" id="days-selector">
+            <button class="day-btn" data-d="1">ПН</button>
+            <button class="day-btn" data-d="2">ВТ</button>
+            <button class="day-btn" data-d="3">СР</button>
+            <button class="day-btn" data-d="4">ЧТ</button>
+            <button class="day-btn" data-d="5">ПТ</button>
+            <button class="day-btn" data-d="6">СБ</button>
+            <button class="day-btn" data-d="0">НД</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">Гантелі</div>
+      <div class="settings-card">
+        <div class="setting-row">
+          <div class="setting-icon">🏋️</div>
+          <div class="setting-label">Вага гантелей<small>кілограм кожна</small></div>
+          <div class="number-input">
+            <button class="num-btn" onclick="adjustWeight(-1)">−</button>
+            <div class="num-val" id="weight-val">12</div>
+            <button class="num-btn" onclick="adjustWeight(1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">Ритм вправ (повторення)</div>
+      <div class="settings-card">
+        <div class="setting-row">
+          <div class="setting-icon">⬇️</div>
+          <div class="setting-label">Фаза вниз<small>секунд на опускання</small></div>
+          <div class="number-input">
+            <button class="num-btn" onclick="adjustTempo('down', -1)">−</button>
+            <div class="num-val" id="tempo-down">2</div>
+            <button class="num-btn" onclick="adjustTempo('down', 1)">+</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-icon">⏸️</div>
+          <div class="setting-label">Пауза внизу<small>затримка в нижній точці</small></div>
+          <div class="number-input">
+            <button class="num-btn" onclick="adjustTempo('hold', -1)">−</button>
+            <div class="num-val" id="tempo-hold">1</div>
+            <button class="num-btn" onclick="adjustTempo('hold', 1)">+</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-icon">⬆️</div>
+          <div class="setting-label">Фаза вгору<small>секунд на підйом</small></div>
+          <div class="number-input">
+            <button class="num-btn" onclick="adjustTempo('up', -1)">−</button>
+            <div class="num-val" id="tempo-up">2</div>
+            <button class="num-btn" onclick="adjustTempo('up', 1)">+</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-icon">💤</div>
+          <div class="setting-label">Відпочинок між підходами<small>секунд</small></div>
+          <div class="number-input">
+            <button class="num-btn" onclick="adjustTempo('rest_set', -15)">−</button>
+            <div class="num-val" id="tempo-rest-set" style="font-size:18px">60</div>
+            <button class="num-btn" onclick="adjustTempo('rest_set', 15)">+</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-icon">🔄</div>
+          <div class="setting-label">Відпочинок між вправами<small>секунд</small></div>
+          <div class="number-input">
+            <button class="num-btn" onclick="adjustTempo('rest_ex', -15)">−</button>
+            <div class="num-val" id="tempo-rest-ex" style="font-size:18px">90</div>
+            <button class="num-btn" onclick="adjustTempo('rest_ex', 15)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="settings-save-btn" onclick="saveSettings()">💾 ЗБЕРЕГТИ</button>
+  </div>
+</div>
+
+<!-- WORKOUT DETAIL -->
+<div id="page-workout">
+  <div class="workout-detail-header">
+    <button class="btn-back-circle" onclick="closeWorkoutDetail()">←</button>
+    <div class="workout-detail-title" id="wd-title">Блок А</div>
+  </div>
+  <div class="page-scroll">
+    <div id="wd-exercises-list"></div>
+    <button class="start-workout-btn" id="wd-start-btn" onclick="startWorkoutFromDetail()">▶ ПОЧАТИ</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-tab active" onclick="switchTab('home', this)">
+    <span class="ico">🏠</span>
+    <span>Дім</span>
+  </button>
+  <button class="nav-tab" onclick="switchTab('calendar', this)">
+    <span class="ico">📊</span>
+    <span>Прогрес</span>
+  </button>
+  <button class="nav-tab" onclick="switchTab('settings', this)">
+    <span class="ico">⚙️</span>
+    <span>Налаш.</span>
+  </button>
+</nav>
+
+<!-- EXERCISE DETAIL OVERLAY -->
+<div class="ex-detail-overlay" id="ex-detail-overlay">
+  <div class="workout-detail-header">
+    <button class="btn-back-circle" onclick="closeExDetail()">←</button>
+    <div class="workout-detail-title" id="ex-detail-nav-title">Вправа</div>
+  </div>
+  <div class="ex-detail-scroll">
+    <div class="ex-detail-hero">
+      <div class="ex-detail-muscle" id="ex-detail-muscle"></div>
+      <div class="ex-detail-name" id="ex-detail-name"></div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="info-block">
+      <div class="info-block-title">🏁 Вихідне положення</div>
+      <div class="info-block-text" id="ex-detail-start"></div>
+    </div>
+    <div class="info-block">
+      <div class="info-block-title">⚡ Виконання</div>
+      <div class="info-block-text" id="ex-detail-exec"></div>
+    </div>
+    <div class="warn-block">
+      <span>⚠️</span>
+      <div class="warn-text" id="ex-detail-warn"></div>
+    </div>
+    <div class="note-block">
+      <span>💡</span>
+      <div class="note-text" id="ex-detail-note"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVE WORKOUT SCREEN -->
+<div id="screen-active">
+  <div class="aw-top-bar">
+    <button class="aw-end-btn" onclick="endWorkoutEarly()">✕ Завершити</button>
+    <div class="aw-progress-wrap">
+      <div class="aw-progress-labels">
+        <span class="aw-progress-label" id="aw-progress-label">Вправа 1 / 5</span>
+        <span class="aw-progress-pct" id="aw-progress-pct">0%</span>
+      </div>
+      <div class="aw-progress-bar">
+        <div class="aw-progress-fill" id="aw-progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aw-main">
+    <div class="aw-ex-label">Зараз</div>
+    <div class="aw-ex-name" id="aw-ex-name">—</div>
+    <div class="aw-ex-muscle" id="aw-ex-muscle">—</div>
+
+    <!-- Reps voice count -->
+    <div id="aw-rhythm-mode">
+      <div class="rhythm-display" id="rhythm-display">
+        <div class="rhythm-phase" id="rhythm-phase">ГОТОВИЙ</div>
+        <div class="rhythm-count" id="rhythm-count">—</div>
+        <div class="rhythm-reps" id="rhythm-reps-done"></div>
+      </div>
+    </div>
+
+    <!-- Timer mode -->
+    <div id="aw-timer-mode" style="display:none">
+      <div class="timer-ring-wrap">
+        <svg class="timer-svg" viewBox="0 0 180 180">
+          <circle class="timer-track" cx="90" cy="90" r="80"/>
+          <circle class="timer-prog" id="aw-timer-circle" cx="90" cy="90" r="80"
+            stroke-dasharray="503" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-inner">
+          <div class="timer-display-big" id="aw-timer-display">60</div>
+          <div style="font-size:11px;letter-spacing:2px;color:var(--muted2);text-transform:uppercase">сек</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sets-row" id="aw-sets-row"></div>
+    <div class="aw-info-note" id="aw-info-note"></div>
+  </div>
+
+  <div class="aw-controls">
+    <button class="aw-btn-skip" onclick="skipCurrentSet()">Пропустити підхід</button>
+    <button class="aw-btn-skip" onclick="skipCurrentEx()" style="color:var(--muted)">Пропустити вправу</button>
+    <button class="aw-btn-main" id="aw-main-btn" onclick="awMainAction()">СТАРТ</button>
+  </div>
+</div>
+
+<!-- REST SCREEN -->
+<div id="screen-rest">
+  <!-- Phase 1: rest timer -->
+  <div id="rest-phase-rest">
+    <div class="rest-title">ВІДПОЧИНОК</div>
+    <div class="rest-next" id="rest-next-label">Наступне: —</div>
+    <div class="rest-timer-big" id="rest-timer-big">60</div>
+    <div class="rest-bar-wrap"><div class="rest-bar-fill" id="rest-bar-fill" style="width:100%"></div></div>
+    <div class="rest-tip" id="rest-tip"></div>
+  </div>
+  <!-- Phase 2: 3-2-1 countdown -->
+  <div id="rest-phase-countdown" style="display:none">
+    <div class="rest-title" style="color:var(--accent)">ПРИГОТУЙСЯ</div>
+    <div class="rest-countdown-num" id="rest-countdown-num">3</div>
+    <div style="font-size:14px;color:var(--muted2);margin-top:12px" id="rest-countdown-label">Підхід починається...</div>
+  </div>
+  <button class="rest-skip-btn" onclick="skipRest()">Пропустити →</button>
+</div>
+
+<!-- COMPLETION SCREEN -->
+<div id="screen-done">
+  <div class="done-emoji">🏆</div>
+  <div class="done-title">ЗРОБЛЕНО!</div>
+  <div class="done-sub" id="done-sub">Чудова робота!</div>
+  <div class="done-stats" id="done-stats"></div>
+  <button class="done-home-btn" onclick="finishAndGoHome()">НА ГОЛОВНУ</button>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const WORKOUTS = {
+  A: {
+    name: 'Блок А — Груди',
+    title: 'Груди, Трицепс та Нижній прес',
+    desc: 'Розширення грудної клітки та зміцнення м\'язів живота.',
+    exercises: [
+      { name:'Жим гантелей лежачи', muscle:'Груди · Трицепс',
+        sets:4, reps:12, type:'reps',
+        tempo:{ down:3, hold:0, up:1, top:1 },
+        hint:'⬇ 3 сек вниз → ⬆ 1 сек вибух → ✊ 1 сек стисни груди',
+        tip:'Торкнувся підлоги — і одразу вибуховий витиск вгору. Не відбивай лікті, не відпочивай внизу.',
+        notes:'Лікті торкаються підлоги, одразу вибуховий витиск.',
+        start:'Ляж на підлогу, ноги зігнуті в колінах. Гантелі над грудьми на витягнутих руках.',
+        exec:'Повільно 3 сек опускай гантелі вниз. Лікті торкнулись підлоги — одразу потужний витиск вгору за 1 сек. Вгорі 1 сек стисни грудні м\'язи.',
+        warn:'Не "відбивай" лікті від підлоги. Контролюй кожну точку.' },
+
+      { name:'Відтискання (широко)', muscle:'Груди',
+        sets:3, reps:12, type:'reps',
+        tempo:{ down:3, hold:1, up:1 },
+        hint:'⬇ 3 сек вниз → ⏸ 1 сек пауза → ⬆ 1 сек вибух вгору',
+        tip:'Внизу затримайся на 1 секунду — це найважча фаза. Відчуй розтягнення грудей перед підйомом.',
+        notes:'Руки ширше плечей. 1 сек пауза в нижній точці.',
+        start:'Упор лежачи, руки значно ширше плечей. Тіло — пряма лінія від голови до п\'ят.',
+        exec:'Опускайся 3 сек до максимуму, відчуваючи розтягнення. Пауза 1 сек внизу. Вибуховий підйом за 1 сек.',
+        warn:'Не прогинайся в попереку. Якщо важко — останні повторення з колін.' },
+
+      { name:'Розведення гантелей', muscle:'Груди (форма)',
+        sets:3, reps:15, type:'reps',
+        tempo:{ down:4, hold:1, up:2 },
+        hint:'⬅➡ 4 сек розтягування → ⏸ 1 сек максимум → 🤗 2 сек зведення',
+        tip:'Уявляй, що обіймаєш велике дерево на шляху вгору. Лікті ледь зігнуті весь час.',
+        notes:'4 сек розтягування, уявляй обійми на шляху вгору.',
+        start:'Лежачи на підлозі, гантелі над собою, долоні одна до одної. Лікті ледь зігнуті.',
+        exec:'4 сек дуже повільно розводь руки в сторони по дузі. 1 сек затримка в точці максимального розтягнення. 2 сек плавно зводь назад, ніби обіймаєш.',
+        warn:'Рух плавний, без ривків. Не "виключай" лікті повністю.' },
+
+      { name:'Французький жим', muscle:'Трицепс',
+        sets:3, reps:12, type:'reps',
+        tempo:{ down:3, hold:0, up:2 },
+        hint:'⬇ 3 сек за голову → ⬆ 2 сек плавне розгинання',
+        tip:'Плечі — нерухомі стовпи. Рухаються лише лікті. Контролюй кожен сантиметр опускання.',
+        notes:'Плечі нерухомі, рухаються тільки лікті.',
+        start:'Стоячи або сидячи, гантель обома руками над головою на витягнутих руках.',
+        exec:'3 сек опускай гантель за голову, згинаючи тільки лікті. Без паузи — 2 сек плавне розгинання вгору.',
+        warn:'Не розводь лікті в сторони. Плечі нерухомі весь час.' },
+
+      { name:'Підйом ніг лежачи', muscle:'Нижній прес',
+        sets:4, reps:15, type:'reps',
+        tempo:{ down:3, hold:1, up:1 },
+        hint:'⬇ 3 сек вниз → ⏸ 1 сек біля підлоги → ⬆ 1 сек підйом',
+        tip:'П\'яти — над підлогою, але не торкаються! Тримай поперек притиснутим весь підхід.',
+        notes:'П\'яти не торкаються підлоги. Поперек притиснутий весь час.',
+        start:'Лежачи на спині, руки під сідницями для підтримки поперека.',
+        exec:'1 сек підіймай прямі ноги до 90°. 3 сек повільно опускай. 1 сек тримай над підлогою — і знову вгору.',
+        warn:'Поперек — щільно до підлоги весь час. Не торкайся підлоги п\'ятами.' }
+    ]
+  },
+  B: {
+    name: 'Блок Б — Плечі',
+    title: 'Плечі, Біцепс та Корекція талії',
+    desc: 'V-подібний силует та рельєф.',
+    exercises: [
+      { name:'Жим гантелей стоячи', muscle:'Плечі (база)',
+        sets:4, reps:10, type:'reps',
+        tempo:{ down:3, hold:0, up:1, top:1 },
+        hint:'⬇ 3 сек вниз → ⬆ 1 сек витиск → ✊ 1 сек фіксація вгорі',
+        tip:'Опускай чітко до рівня вух. Не зводь гантелі вгорі — залишай плечі в напрузі.',
+        notes:'До рівня вух, 1 сек фіксація вгорі.',
+        start:'Стоячи, гантелі на рівні плечей, долоні вперед. Корпус прямий.',
+        exec:'1 сек потужний витиск вгору. 1 сек фіксуй вгорі. 3 сек повільно опускай до рівня вух.',
+        warn:'Не допомагай ногами. Не прогинайся в попереку.' },
+
+      { name:'Махи в сторони', muscle:'Плечі (ширина)',
+        sets:4, reps:15, type:'reps',
+        tempo:{ down:3, hold:1, up:2 },
+        hint:'⬆ 2 сек підйом → ⏸ 1 сек затримка вгорі → ⬇ 3 сек вниз',
+        tip:'Обов\'язкова 1 сек затримка вгорі — це дасть "памп" плечам. Мізинець вище за великий палець.',
+        notes:'1 сек затримка вгорі обов\'язкова для пампу.',
+        start:'Стоячи, гантелі в опущених руках, лікті ледь зігнуті.',
+        exec:'2 сек піднімай через сторони до рівня плечей. 1 сек обов\'язкова затримка вгорі. 3 сек підконтрольне опускання.',
+        warn:'Без інерції корпусу. Це ізолююча вправа.' },
+
+      { name:'Молотки (Hammer Curls)', muscle:'Біцепс · Передпліччя',
+        sets:4, reps:12, type:'reps',
+        tempo:{ down:3, hold:1, up:2 },
+        hint:'⬆ 2 сек підйом → ✊ 1 сек напруження → ⬇ 3 сек вниз',
+        tip:'Повільне опускання за 3 сек — це і є головна робота біцепса. Не кидай гантелі вниз.',
+        notes:'3 сек повільне опускання — це основна робота.',
+        start:'Стоячи, долоні до тулуба (нейтральний хват). Лікті притиснуті.',
+        exec:'2 сек підіймай до плечей. 1 сек напруж біцепс вгорі. 3 сек повільно опускай вниз.',
+        warn:'Лікті нерухомі. Долоні не повертати — нейтральний хват весь час.' },
+
+      { name:'Планка', muscle:'Весь кор',
+        sets:3, reps:60, type:'timer', duration:60,
+        tempo:null,
+        hint:'Прес + сідниці + стегна — все напружено одночасно',
+        tip:'Уяви, що тебе тягнуть за п\'яти назад і за голову вперед. Тіло — натягнута струна.',
+        notes:'Прес, сідниці, стегна — все разом.',
+        start:'Упор на передпліччя та носки. Лікті під плечима.',
+        exec:'Утримуй пряму лінію від голови до п\'ят. Прес напружений, дихай рівно.',
+        warn:'Таз не опускати вниз і не піднімати вгору.' },
+
+      { name:'Велосипед', muscle:'Прес · Косі м\'язи',
+        sets:3, reps:60, type:'timer', duration:60,
+        tempo:{ down:2, hold:1, up:2 },
+        hint:'2 сек поворот → 1 сек фіксація ліктем до коліна',
+        tip:'Не крути педалі хаотично. Кожен дотик ліктем до коліна — фіксація 1 секунду.',
+        notes:'Кожен дотик — фіксація 1 сек. Без хаотичного кручення.',
+        start:'Лежачи на спині, руки за головою, ноги підняті й зігнуті.',
+        exec:'2 сек повільний поворот корпусу. 1 сек фіксуй лікоть біля коліна. Потім інший бік.',
+        warn:'Повільно — відчувай роботу косих м\'язів.' }
+    ]
+  }
+};
+
+// ============================================================
+// STATE & STORAGE
+// ============================================================
+let settings = {
+  mode: 3,
+  days: [1, 3, 5], // Mon, Wed, Fri
+  weight: 12,
+  tempo: { down: 2, hold: 1, up: 2, rest_set: 60, rest_ex: 90 }};
+
+let historyLog = []; // [{date: 'YYYY-MM-DD', block: 'A', duration: 42, sets: 18}]
+let activeWorkoutBlock = null;
+
+// Active workout state
+let awState = {
+  exIndex: 0,
+  setIndex: 0,
+  repsDone: 0,
+  phaseTimer: null,
+  restTimer: null,
+  timerInterval: null,
+  phase: 'idle', // idle, down, hold, up, rest_set, rest_ex, done
+  startTime: null,
+  phaseSec: 0,
+  totalSets: 0,
+  setsCompleted: 0,
+};
+
+// Calendar
+let calViewDate = new Date();
+
+async function loadData() {
+  try {
+    const s = await window.storage.get('hi-settings');
+    if (s) settings = { ...settings, ...JSON.parse(s.value) };
+  } catch(e) {}
+  try {
+    const h = await window.storage.get('hi-history');
+    if (h) historyLog = JSON.parse(h.value);
+  } catch(e) {}
+  applySettingsToUI();
+  updateHomeScreen();
+  updateCalendar();
+}
+
+async function persist() {
+  try { await window.storage.set('hi-settings', JSON.stringify(settings)); } catch(e) {}
+  try { await window.storage.set('hi-history', JSON.stringify(historyLog)); } catch(e) {}
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+let activeTab = 'home';
+let workoutDetailBlock = null;
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  activeTab = tab;
+  if (tab === 'calendar') updateCalendar();
+}
+
+function openWorkoutDetail(block) {
+  workoutDetailBlock = block;
+  const w = WORKOUTS[block];
+  document.getElementById('wd-title').textContent = w.name;
+  const list = document.getElementById('wd-exercises-list');
+  list.innerHTML = '';
+  w.exercises.forEach((ex, i) => {
+    const el = document.createElement('div');
+    el.className = 'ex-list-item';
+    el.onclick = () => openExDetail(ex);
+    el.innerHTML = `
+      <div class="ex-num">0${i+1}</div>
+      <div class="ex-body">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-tags">
+          <span class="tag">${ex.muscle}</span>
+          <span class="tag">${ex.sets} підходи</span>
+          <span class="tag">${ex.type === 'timer' ? ex.duration+'сек' : ex.reps+' повт'}</span>
+        </div>
+      </div>
+      <div class="ex-sets-badge">
+        <div class="ex-sets-num">${ex.sets}</div>
+        <div class="ex-sets-lbl">підходи</div>
+      </div>`;
+    list.appendChild(el);
+  });
+  document.getElementById('page-workout').classList.add('active');
+}
+
+function closeWorkoutDetail() {
+  document.getElementById('page-workout').classList.remove('active');
+}
+
+function startWorkoutFromDetail() {
+  document.getElementById('page-workout').classList.remove('active');
+  beginWorkout(workoutDetailBlock);
+}
+
+function openExDetail(ex) {
+  document.getElementById('ex-detail-nav-title').textContent = ex.name;
+  document.getElementById('ex-detail-muscle').textContent = ex.muscle;
+  document.getElementById('ex-detail-name').textContent = ex.name;
+  document.getElementById('ex-detail-start').textContent = ex.start;
+  document.getElementById('ex-detail-exec').textContent = ex.exec;
+  document.getElementById('ex-detail-warn').textContent = ex.warn;
+  document.getElementById('ex-detail-note').textContent = ex.notes;
+  const ov = document.getElementById('ex-detail-overlay');
+  ov.style.display = 'flex';
+  requestAnimationFrame(() => ov.classList.add('open'));
+}
+
+function closeExDetail() {
+  const ov = document.getElementById('ex-detail-overlay');
+  ov.classList.remove('open');
+  setTimeout(() => { ov.style.display = 'none'; }, 320);
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function updateHomeScreen() {
+  // Greeting
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Доброго ранку' : h < 17 ? 'Добрий день' : 'Добрий вечір';
+  document.getElementById('home-greeting').textContent = g;
+
+  // Stats
+  document.getElementById('s-total').textContent = historyLog.length;
+  document.getElementById('s-streak').textContent = calcStreak();
+  document.getElementById('s-weight').textContent = settings.weight;
+
+  // Today
+  const todayDow = getTodayDow();
+  const isTrainingDay = settings.days.includes(todayDow);
+  const todayStr = getTodayStr();
+  const todayEntries = historyLog.filter(h => h.date === todayStr);
+  const doneBlocks = todayEntries.map(e => e.block);
+  const todayBlock = getBlockForDate(todayStr);
+  const alreadyDoneToday = doneBlocks.includes(todayBlock);
+
+  const content = document.getElementById('today-content');
+  const btn = document.getElementById('btn-start-today');
+
+  if (alreadyDoneToday) {
+    const lines = todayEntries.map(e =>
+      `${WORKOUTS[e.block]?.name || 'Тренування'} — ${e.duration} хв · ${e.sets} підходів`
+    ).join('<br>');
+    content.innerHTML = `
+      <div style="color:var(--green); font-family:'Bebas Neue'; font-size:20px; margin-bottom:6px">✓ ВИКОНАНО</div>
+      <div style="font-size:13px; color:var(--muted2); line-height:1.8">${lines}</div>`;
+    btn.style.display = 'none';
+  } else if (isTrainingDay) {
+    content.innerHTML = `
+      <div class="today-workout-name">${WORKOUTS[todayBlock].name}</div>
+      <div class="today-workout-meta">${WORKOUTS[todayBlock].desc}</div>`;
+    btn.style.display = 'block';
+    btn.disabled = false;
+    btn.dataset.block = todayBlock;
+  } else {
+    const next = getNextTrainingDay();
+    content.innerHTML = `
+      <div class="today-rest">ВІДПОЧИНОК<br><span style="font-size:14px; font-weight:400; font-family:'DM Sans'; color:var(--muted2)">Наступне тренування: ${next}</span></div>`;
+    btn.style.display = 'none';
+  }
+}
+
+function startTodayWorkout() {
+  const block = document.getElementById('btn-start-today').dataset.block;
+  beginWorkout(block);
+}
+
+function getTodayDow() {
+  return new Date().getDay(); // 0=Sun
+}
+function getTodayStr() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10);
+}
+function getDateStr(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+function getBlockForDate(dateStr) {
+  // Count how many training days have passed since start, alternate A/B
+  const sorted = [...settings.days].sort((a,b)=>a-b);
+  // Count training days in history
+  const count = historyLog.filter(h => h.date < dateStr).length;
+  return count % 2 === 0 ? 'A' : 'B';
+}
+
+function getNextTrainingDay() {
+  const dow = getTodayDow();
+  const sorted = [...settings.days].sort((a,b)=>a-b);
+  const days = ['НД','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
+  for (let i = 1; i <= 7; i++) {
+    const next = (dow + i) % 7;
+    if (sorted.includes(next)) {
+      return i === 1 ? 'завтра (' + days[next] + ')' : days[next];
+    }
+  }
+  return '—';
+}
+
+function calcStreak() {
+  if (!historyLog.length) return 0;
+  // Count consecutive weeks with at least mode-days trainings
+  const sorted = [...historyLog].sort((a,b)=>b.date.localeCompare(a.date));
+  let streak = 0;
+  const now = new Date();
+  for (let w = 0; w < 52; w++) {
+    const weekStart = new Date(now);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1 - w*7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    const ws = getDateStr(weekStart);
+    const we = getDateStr(weekEnd);
+    const count = historyLog.filter(h => h.date >= ws && h.date <= we).length;
+    if (count >= settings.mode) streak++;
+    else break;
+  }
+  return streak;
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function applySettingsToUI() {
+  // Mode buttons
+  [2,3,4].forEach(n => {
+    document.getElementById('mode-'+n)?.classList.toggle('active', settings.mode === n);
+  });
+  // Days
+  document.querySelectorAll('.day-btn').forEach(btn => {
+    const d = parseInt(btn.dataset.d);
+    btn.classList.toggle('active', settings.days.includes(d));
+  });
+  // Weight
+  document.getElementById('weight-val').textContent = settings.weight;
+  // Tempo
+  ['down','hold','up'].forEach(k => {
+    const el = document.getElementById('tempo-'+k);
+    if (el) el.textContent = settings.tempo[k];
+  });
+  document.getElementById('tempo-rest-set').textContent = settings.tempo.rest_set;
+  document.getElementById('tempo-rest-ex').textContent = settings.tempo.rest_ex;
+}
+
+function setMode(n) {
+  settings.mode = n;
+  [2,3,4].forEach(m => document.getElementById('mode-'+m)?.classList.toggle('active', m===n));
+}
+
+document.querySelectorAll('.day-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const d = parseInt(btn.dataset.d);
+    if (settings.days.includes(d)) {
+      if (settings.days.length > 1) settings.days = settings.days.filter(x=>x!==d);
+    } else {
+      settings.days.push(d);
+    }
+    btn.classList.toggle('active', settings.days.includes(d));
+  });
+});
+
+function adjustWeight(delta) {
+  settings.weight = Math.max(1, settings.weight + delta);
+  document.getElementById('weight-val').textContent = settings.weight;
+}
+
+function adjustTempo(key, delta) {
+  const min = key.startsWith('rest') ? 15 : 0;
+  settings.tempo[key] = Math.max(min, settings.tempo[key] + delta);
+  const elId = key === 'rest_set' ? 'tempo-rest-set' : key === 'rest_ex' ? 'tempo-rest-ex' : 'tempo-'+key;
+  const el = document.getElementById(elId);
+  if (el) el.textContent = settings.tempo[key];
+}
+
+function saveSettings() {
+  persist();
+  updateHomeScreen();
+  // Flash feedback
+  const btn = document.querySelector('.settings-save-btn');
+  const orig = btn.textContent;
+  btn.textContent = '✓ ЗБЕРЕЖЕНО';
+  btn.style.background = 'var(--green)';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1500);
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+const MONTHS_UA = ['Січень','Лютий','Березень','Квітень','Травень','Червень',
+  'Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+
+function calPrev() { calViewDate.setMonth(calViewDate.getMonth()-1); updateCalendar(); }
+function calNext() { calViewDate.setMonth(calViewDate.getMonth()+1); updateCalendar(); }
+
+function updateCalendar() {
+  const y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+  document.getElementById('cal-month-name').textContent = `${MONTHS_UA[m]} ${y}`;
+
+  const todayStr = getTodayStr();
+  const firstDay = new Date(y, m, 1);
+  const lastDay = new Date(y, m+1, 0);
+  // Mon-first: 0=Mon..6=Sun
+  let startDow = (firstDay.getDay() + 6) % 7;
+
+  const grid = document.getElementById('cal-days');
+  grid.innerHTML = '';
+
+  // Empty cells
+  for (let i = 0; i < startDow; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow = (new Date(y,m,d).getDay()+6)%7; // Mon=0
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    el.textContent = d;
+
+    const trained = historyLog.some(h => h.date === dateStr);
+    const isToday = dateStr === todayStr;
+    const isPlanned = settings.days.includes((dow + 1) % 7 === 0 ? 0 : (new Date(y,m,d).getDay()));
+    // fix: use JS getDay() for matching
+    const jsDow = new Date(y,m,d).getDay();
+    const isTrainDay = settings.days.includes(jsDow);
+
+    if (trained) {
+      el.classList.add('trained');
+      el.style.cursor = 'pointer';
+      el.onclick = () => openDayModal(dateStr);
+    }
+    else if (isToday) el.classList.add('today');
+    else if (dateStr > todayStr && isTrainDay) el.classList.add('planned');
+    else if (dateStr < todayStr && isTrainDay && !trained) el.classList.add('skipped');
+
+    grid.appendChild(el);
+  }
+
+  // Streak
+  const s = calcStreak();
+  document.getElementById('streak-big').textContent = s;
+
+  // History list
+  const hl = document.getElementById('history-list');
+  hl.innerHTML = '';
+  const recent = [...historyLog].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
+  if (!recent.length) {
+    hl.innerHTML = '<div style="padding:20px;color:var(--muted2);font-size:13px;text-align:center">Тренувань ще немає</div>';
+    return;
+  }
+  recent.forEach(entry => {
+    const el = document.createElement('div');
+    el.className = 'history-item';
+    const d = new Date(entry.date);
+    const dateLabel = d.toLocaleDateString('uk-UA', {day:'numeric', month:'long'});
+    el.innerHTML = `
+      <div class="history-dot"></div>
+      <div class="history-date">${dateLabel}</div>
+      <div class="history-name">${WORKOUTS[entry.block]?.name || 'Тренування'}</div>
+      <div class="history-dur">${entry.duration} хв</div>`;
+    hl.appendChild(el);
+  });
+}
+
+// ============================================================
+// ACTIVE WORKOUT ENGINE
+// ============================================================
+function beginWorkout(block) {
+  activeWorkoutBlock = block;
+  awState = {
+    exIndex: 0, setIndex: 0, repsDone: 0,
+    phaseTimer: null, restTimer: null, timerInterval: null,
+    phase: 'idle', startTime: Date.now(),
+    phaseSec: 0, totalSets: 0, setsCompleted: 0,
+  };
+  // total sets
+  WORKOUTS[block].exercises.forEach(ex => awState.totalSets += ex.sets);
+
+  document.getElementById('screen-active').classList.add('open');
+  loadAwExercise();
+}
+
+function loadAwExercise() {
+  clearAwTimers();
+  const block = WORKOUTS[activeWorkoutBlock];
+  const ex = block.exercises[awState.exIndex];
+  awState.setIndex = 0;
+  awState.repsDone = 0;
+  awState.phase = 'idle';
+
+  document.getElementById('aw-ex-name').textContent = ex.name;
+  document.getElementById('aw-ex-muscle').textContent = ex.muscle;
+  document.getElementById('aw-info-note').textContent = ex.notes;
+
+  // Progress
+  const pct = Math.round((awState.exIndex / block.exercises.length) * 100);
+  document.getElementById('aw-progress-fill').style.width = pct + '%';
+  document.getElementById('aw-progress-pct').textContent = pct + '%';
+  document.getElementById('aw-progress-label').textContent = `Вправа ${awState.exIndex+1} / ${block.exercises.length}`;
+
+  // Sets pips
+  const row = document.getElementById('aw-sets-row');
+  row.innerHTML = '';
+  for (let i = 0; i < ex.sets; i++) {
+    const pip = document.createElement('div');
+    pip.className = 'set-pip' + (i === 0 ? ' current' : '');
+    pip.id = 'pip-' + i;
+    row.appendChild(pip);
+  }
+
+  if (ex.type === 'timer') {
+    document.getElementById('aw-rhythm-mode').style.display = 'none';
+    document.getElementById('aw-timer-mode').style.display = 'block';
+    document.getElementById('aw-main-btn').textContent = 'СТАРТ';
+    document.getElementById('aw-main-btn').disabled = false;
+    resetTimerDisplay(ex.duration);
+  } else {
+    document.getElementById('aw-rhythm-mode').style.display = 'block';
+    document.getElementById('aw-timer-mode').style.display = 'none';
+    resetRhythmDisplay(ex.reps);
+    document.getElementById('aw-main-btn').textContent = 'СТАРТ';
+    document.getElementById('aw-main-btn').disabled = false;
+  }
+}
+
+function awMainAction() {
+  const ex = WORKOUTS[activeWorkoutBlock].exercises[awState.exIndex];
+  if (awState.phase === 'idle') {
+    if (ex.type === 'timer') startTimerSet(ex);
+    else startRhythmSet(ex);
+  }
+  // if counting/timer — button is disabled, nothing to do
+}
+
+// --- VOICE ENGINE ---
+let _bestVoice = null;
+
+function initVoice() {
+  if (!window.speechSynthesis) return;
+  const tryFind = () => {
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return;
+    // Priority: uk-UA → uk → ru-RU → ru → any
+    _bestVoice =
+      voices.find(v => v.lang === 'uk-UA') ||
+      voices.find(v => v.lang.startsWith('uk')) ||
+      voices.find(v => v.lang === 'ru-RU') ||
+      voices.find(v => v.lang.startsWith('ru')) ||
+      voices[0] || null;
+  };
+  tryFind();
+  window.speechSynthesis.onvoiceschanged = tryFind;
+}
+
+// speak(text) — fire and forget
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text);
+  if (_bestVoice) u.voice = _bestVoice;
+  u.lang = _bestVoice ? _bestVoice.lang : 'uk-UA';
+  u.rate = 0.88;
+  u.pitch = 1.05;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+// speakThen(text, delayAfter, callback) — calls callback after speech ends + extra delay
+function speakThen(text, delayAfter, callback) {
+  if (!window.speechSynthesis) { setTimeout(callback, delayAfter); return; }
+  const u = new SpeechSynthesisUtterance(text);
+  if (_bestVoice) u.voice = _bestVoice;
+  u.lang = _bestVoice ? _bestVoice.lang : 'uk-UA';
+  u.rate = 0.88;
+  u.pitch = 1.05;
+  u.onend = () => setTimeout(callback, delayAfter);
+  u.onerror = () => setTimeout(callback, delayAfter);
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+// speakSequence([{text, pause}], done) — chain phrases with pauses
+function speakSequence(items, done) {
+  if (!items.length) { if (done) done(); return; }
+  const [first, ...rest] = items;
+  speakThen(first.text, first.pause || 0, () => speakSequence(rest, done));
+}
+
+// Ukrainian number words
+const NUM_UA = ['','Один','Два','Три','Чотири','П\'ять','Шість','Сім','Вісім','Дев\'ять',
+  'Десять','Одинадцять','Дванадцять','Тринадцять','Чотирнадцять','П\'ятнадцять',
+  'Шістнадцять','Сімнадцять','Вісімнадцять','Дев\'ятнадцять','Двадцять'];
+
+function startRhythmSet(ex) {
+  awState.phase = 'counting';
+  awState.repsDone = 0;
+  document.getElementById('aw-main-btn').disabled = true;
+  document.getElementById('aw-main-btn').textContent = 'В ПРОЦЕСІ';
+
+  const rd = document.getElementById('rhythm-display');
+  rd.className = 'rhythm-display phase-up';
+  document.getElementById('rhythm-phase').textContent = 'ГОТУЙТЕСЬ';
+  document.getElementById('rhythm-phase').className = 'rhythm-phase phase-up';
+  document.getElementById('rhythm-count').textContent = '—';
+  document.getElementById('rhythm-reps-done').textContent = `0 / ${ex.reps}`;
+
+  // Show hint under the circle
+  document.getElementById('aw-info-note').textContent = ex.hint || ex.notes || '';
+
+  // Use per-exercise tempo, fall back to global settings
+  const t = ex.tempo || settings.tempo;
+  const repDuration = (t.down||2) + (t.hold||0) + (t.up||1) + (t.top||0);
+
+  speakSequence([
+    { text: 'Приготуйтеся', pause: 500 },
+    { text: 'Три', pause: 1000 },
+    { text: 'Два', pause: 1000 },
+    { text: 'Один', pause: 1000 },
+  ], () => {
+    if (awState.phase !== 'counting') return;
+    speak('Поїхали');
+    document.getElementById('rhythm-phase').textContent = 'ПОЇХАЛИ';
+    awState.phaseTimer = setTimeout(() => doNextRep(ex, repDuration), 800);
+  });
+}
+
+function doNextRep(ex, repDuration) {
+  if (awState.phase !== 'counting') return;
+  awState.repsDone++;
+
+  const rc = document.getElementById('rhythm-count');
+  const rr = document.getElementById('rhythm-reps-done');
+  const rp = document.getElementById('rhythm-phase');
+  const rd = document.getElementById('rhythm-display');
+
+  rc.textContent = awState.repsDone;
+  rr.textContent = `${awState.repsDone} / ${ex.reps}`;
+
+  // Pulse animation
+  rc.classList.add('pulse');
+  setTimeout(() => rc.classList.remove('pulse'), 150);
+
+  // Color: alternating
+  const isEven = awState.repsDone % 2 === 0;
+  rd.className = 'rhythm-display ' + (isEven ? 'phase-hold' : 'phase-up');
+  rp.className = 'rhythm-phase ' + (isEven ? 'phase-hold' : 'phase-up');
+  rp.textContent = awState.repsDone + ' / ' + ex.reps;
+
+  // Speak the number
+  const word = NUM_UA[awState.repsDone] || String(awState.repsDone);
+  speak(word);
+
+  if (awState.repsDone >= ex.reps) {
+    // Done!
+    setTimeout(() => {
+      speak('Підхід виконано');
+      rd.className = 'rhythm-display phase-up';
+      rc.textContent = '✓';
+      onSetComplete();
+    }, 600);
+    return;
+  }
+
+  // Schedule next rep
+  awState.phaseTimer = setTimeout(() => doNextRep(ex, repDuration), repDuration * 1000);
+}
+
+function resetRhythmDisplay(reps) {
+  const rd = document.getElementById('rhythm-display');
+  rd.className = 'rhythm-display';
+  const rp = document.getElementById('rhythm-phase');
+  rp.className = 'rhythm-phase';
+  rp.textContent = 'ГОТОВИЙ';
+  document.getElementById('rhythm-count').textContent = '—';
+  document.getElementById('rhythm-reps-done').textContent = `0 / ${reps}`;
+}
+
+// --- TIMER (plank, bike) ---
+function startTimerSet(ex) {
+  awState.phase = 'timer';
+  let sec = ex.duration;
+  document.getElementById('aw-main-btn').disabled = true;
+  document.getElementById('aw-main-btn').textContent = 'В ПРОЦЕСІ';
+  updateTimerDisplay(sec, ex.duration);
+
+  awState.timerInterval = setInterval(() => {
+    sec--;
+    updateTimerDisplay(sec, ex.duration);
+    if (sec <= 0) {
+      clearInterval(awState.timerInterval);
+      onSetComplete();
+    }
+  }, 1000);
+}
+
+function resetTimerDisplay(dur) {
+  document.getElementById('aw-timer-display').textContent = dur;
+  document.getElementById('aw-timer-circle').style.strokeDashoffset = 0;
+}
+
+function updateTimerDisplay(cur, total) {
+  document.getElementById('aw-timer-display').textContent = cur;
+  const circ = 503;
+  document.getElementById('aw-timer-circle').style.strokeDashoffset = (1 - cur/total) * circ;
+}
+
+// --- SET COMPLETE ---
+function onSetComplete() {
+  clearAwTimers();
+  awState.setsCompleted++;
+  const ex = WORKOUTS[activeWorkoutBlock].exercises[awState.exIndex];
+  const pip = document.getElementById('pip-' + awState.setIndex);
+  if (pip) { pip.classList.remove('current'); pip.classList.add('done'); }
+  awState.setIndex++;
+
+  if (awState.setIndex < ex.sets) {
+    // Same exercise — auto rest, then auto-start next set with countdown
+    const nextPip = document.getElementById('pip-' + awState.setIndex);
+    if (nextPip) nextPip.classList.add('current');
+    showRestAutoNext(
+      settings.tempo.rest_set,
+      `Підхід ${awState.setIndex + 1} / ${ex.sets}`,
+      'Гарна робота! Відпочиньте.',
+      ex.tip || '',
+      () => {
+        awState.phase = 'idle';
+        resetIfReps(ex);
+        awMainAction();
+      }
+    );
+  } else {
+    // All sets of this exercise done — move to next exercise (manual start)
+    awState.exIndex++;
+    if (awState.exIndex < WORKOUTS[activeWorkoutBlock].exercises.length) {
+      const nextEx = WORKOUTS[activeWorkoutBlock].exercises[awState.exIndex];
+      showRestAutoNext(
+        settings.tempo.rest_ex,
+        `Наступна: ${nextEx.name}`,
+        'Чудово! Відпочиньте перед наступною вправою.',
+        nextEx.tip || '',
+        () => { loadAwExercise(); }
+      );
+    } else {
+      finishWorkout();
+    }
+  }
+}
+
+function resetIfReps(ex) {
+  awState.phase = 'idle';
+  if (ex.type === 'reps') {
+    resetRhythmDisplay(ex.reps);
+  } else {
+    resetTimerDisplay(ex.duration);
+  }
+  document.getElementById('aw-main-btn').textContent = 'СТАРТ';
+  document.getElementById('aw-main-btn').disabled = false;
+}
+
+// --- REST ---
+function showRestAutoNext(seconds, label, voiceMsg, tip, callback) {
+  const restEl = document.getElementById('screen-rest');
+
+  // Show rest phase
+  document.getElementById('rest-phase-rest').style.display = 'block';
+  document.getElementById('rest-phase-countdown').style.display = 'none';
+  document.getElementById('rest-next-label').textContent = label;
+  document.getElementById('rest-timer-big').textContent = seconds;
+  document.getElementById('rest-bar-fill').style.width = '100%';
+  document.getElementById('rest-tip').textContent = tip || '';
+  restEl.classList.add('open');
+
+  setTimeout(() => speak(voiceMsg), 300);
+
+  let s = seconds;
+  awState.restTimer = setInterval(() => {
+    s--;
+    document.getElementById('rest-timer-big').textContent = s;
+    document.getElementById('rest-bar-fill').style.width = ((s / seconds) * 100) + '%';
+    if (s <= 0) {
+      clearInterval(awState.restTimer);
+      startRestCountdown(label, callback);
+    }
+  }, 1000);
+
+  // skipRest jumps straight to exercise, bypassing countdown
+  restEl._skipCallback = callback;
+  restEl._callback = callback;
+}
+
+function startRestCountdown(label, callback) {
+  document.getElementById('rest-phase-rest').style.display = 'none';
+  document.getElementById('rest-phase-countdown').style.display = 'block';
+  document.getElementById('rest-countdown-label').textContent = label;
+
+  const nums = [3, 2, 1];
+  const words = ['Три', 'Два', 'Один'];
+  let i = 0;
+
+  const tick = () => {
+    if (i >= nums.length) {
+      speak('Поїхали');
+      // brief pause then launch
+      awState.restTimer = setTimeout(() => {
+        doneRest(callback);
+      }, 700);
+      return;
+    }
+    const el = document.getElementById('rest-countdown-num');
+    el.textContent = nums[i];
+    // re-trigger animation
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = '';
+    speak(words[i]);
+    i++;
+    awState.restTimer = setTimeout(tick, 1000);
+  };
+  tick();
+}
+
+function showRest(seconds, label, callback) {
+  showRestAutoNext(seconds, label, 'Відпочинок', '', callback);
+}
+
+function doneRest(callback) {
+  clearInterval(awState.restTimer);
+  clearTimeout(awState.restTimer);
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  document.getElementById('screen-rest').classList.remove('open');
+  if (callback) callback();
+}
+
+function skipRest() {
+  clearInterval(awState.restTimer);
+  clearTimeout(awState.restTimer);
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  const cb = document.getElementById('screen-rest')._skipCallback;
+  document.getElementById('screen-rest').classList.remove('open');
+  if (cb) cb();
+}
+
+// --- SKIP ---
+function skipCurrentSet() {
+  clearAwTimers();
+  document.getElementById('screen-rest').classList.remove('open');
+  // Treat as if the set was completed (moves to next set or next exercise)
+  onSetComplete();
+}
+
+function skipCurrentEx() {
+  clearAwTimers();
+  document.getElementById('screen-rest').classList.remove('open');
+  awState.exIndex++;
+  if (awState.exIndex < WORKOUTS[activeWorkoutBlock].exercises.length) {
+    loadAwExercise();
+  } else {
+    finishWorkout();
+  }
+}
+
+function endWorkoutEarly() {
+  clearAwTimers();
+  document.getElementById('screen-rest').classList.remove('open');
+  finishWorkout();
+}
+
+// --- FINISH ---
+function finishWorkout() {
+  clearAwTimers();
+  document.getElementById('screen-rest').classList.remove('open');
+  document.getElementById('screen-active').classList.remove('open');
+
+  speak('Тренування завершено! Чудова робота!');
+
+  const duration = Math.max(1, Math.round((Date.now() - awState.startTime) / 60000));
+  const entry = {
+    date: getTodayStr(),
+    block: activeWorkoutBlock,
+    duration,
+    sets: awState.setsCompleted,
+  };
+  // Save entry (allow multiple per day — A and B are different)
+  historyLog.push(entry);
+  persist();
+
+  const block = WORKOUTS[activeWorkoutBlock];
+  document.getElementById('done-sub').textContent = block.name + ' завершено!';
+  document.getElementById('done-stats').innerHTML = `
+    <div class="done-stat">
+      <div class="done-stat-num">${block.exercises.length}</div>
+      <div class="done-stat-lbl">Вправ</div>
+    </div>
+    <div class="done-stat">
+      <div class="done-stat-num">${awState.setsCompleted}</div>
+      <div class="done-stat-lbl">Підходів</div>
+    </div>
+    <div class="done-stat">
+      <div class="done-stat-num">${duration}</div>
+      <div class="done-stat-lbl">Хвилин</div>
+    </div>`;
+  document.getElementById('screen-done').classList.add('open');
+  updateHomeScreen();
+  updateCalendar();
+}
+
+function finishAndGoHome() {
+  document.getElementById('screen-done').classList.remove('open');
+  updateHomeScreen();
+}
+
+function clearAwTimers() {
+  clearTimeout(awState.phaseTimer);
+  clearInterval(awState.timerInterval);
+  clearInterval(awState.restTimer);
+  awState.phase = 'idle';
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+// ============================================================
+// DAY MODAL
+// ============================================================
+function openDayModal(dateStr) {
+  const entry = historyLog.find(h => h.date === dateStr);
+  if (!entry) return;
+  const d = new Date(dateStr);
+  const dateLabel = d.toLocaleDateString('uk-UA', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('day-modal-date').textContent = dateLabel;
+  document.getElementById('day-modal-title').textContent = WORKOUTS[entry.block]?.name || 'Тренування';
+  document.getElementById('day-modal-stats').innerHTML = `
+    <div class="day-modal-stat">
+      <div class="day-modal-stat-num">${entry.duration}</div>
+      <div class="day-modal-stat-lbl">хвилин</div>
+    </div>
+    <div class="day-modal-stat">
+      <div class="day-modal-stat-num">${entry.sets}</div>
+      <div class="day-modal-stat-lbl">підходів</div>
+    </div>
+    <div class="day-modal-stat">
+      <div class="day-modal-stat-num">${WORKOUTS[entry.block]?.exercises?.length || '—'}</div>
+      <div class="day-modal-stat-lbl">вправ</div>
+    </div>`;
+  document.getElementById('day-modal-delete-btn').onclick = () => {
+    closeDayModal();
+    askDeleteEntry(dateStr);
+  };
+  document.getElementById('day-modal-backdrop').classList.add('open');
+}
+
+function closeDayModal(e) {
+  if (e && e.target !== document.getElementById('day-modal-backdrop')) return;
+  document.getElementById('day-modal-backdrop').classList.remove('open');
+}
+
+// ============================================================
+// CONFIRM / DELETE
+// ============================================================
+let confirmCallback = null;
+
+function showConfirm(title, sub, okLabel, cb) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-sub').textContent = sub;
+  document.getElementById('confirm-ok-btn').textContent = okLabel;
+  confirmCallback = cb;
+  document.getElementById('confirm-dialog').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-dialog').classList.remove('open');
+  confirmCallback = null;
+}
+
+document.getElementById('confirm-ok-btn').onclick = () => {
+  const cb = confirmCallback;
+  closeConfirm();
+  if (cb) cb();
+};
+
+function askDeleteEntry(dateStr) {
+  showConfirm('Видалити запис?', `Тренування від ${dateStr} буде видалено з історії.`, 'Видалити', () => {
+    historyLog = historyLog.filter(h => h.date !== dateStr);
+    persist();
+    updateCalendar();
+    updateHomeScreen();
+  });
+}
+
+function askClearHistory() {
+  showConfirm('Очистити всю історію?', 'Всі записи тренувань будуть видалені. Цю дію не можна скасувати.', 'Очистити все', () => {
+    historyLog = [];
+    persist();
+    updateCalendar();
+    updateHomeScreen();
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadData();
+initVoice();
+
+// Register Service Worker for PWA offline support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Inline service worker as blob URL — no extra file needed
+    const swCode = `
+const CACHE = 'home-iron-v1';
+const ASSETS = [self.location.href.replace('/sw.js','') || '/'];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+});`;
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
